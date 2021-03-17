@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+
+{%block title%}
+Thru
+{% endblock %}
+
+{% block main %}
+<h1>
+    How many words do you know?
+</h1>
+<div>
+    Rules: Enter n to deal a new hand. Enter a word from given letters.
+    <!-- <button type="button" id="new_hand_button">Click Me!</button> -->
+</div>
+
+
+   
+
+<div id="userInpDiv" class="data_entry">
+    <form action="{{ url_for('thru') }}" method="post" id="userInpForm" enctype="multipart/form-data">
+
+        <input name="userInp" autocomplete="off" class="input_box">
+
+        <input id="checkThroughputRate" type="submit" class='new-button-data' value="Send">
+
+    
+    </form>
+</div>
+
+
+<div class="jumbotron">
+    <h1 id="interface" class="display-4"></h1>
+</div>
+
+<div class="jumbotron">
+    <h1 id="messages" class="display-4"></h1>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('#userInpForm').on('submit', function (e) {
+            e.preventDefault();
+
+            var form = $(this)[0];
+            var formData = new FormData(form);
+
+            $.ajax({
+                url: '/thru',
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    console.log(data);
+                    document.getElementById('interface').innerText = data.split(" ")[0];
+                    document.getElementById('messages').innerText = data.split(" ").slice(1).join(" ");
+                }
+            });
+        });
+    });
+</script>
+<!-- <script>
+    var newgame=document.querySelector("new_hand_button")
+    newgame.addEventListener("click", function (){
+        $.get()
+    }
+    )
+</script> -->
+
+<!-- <script>
+    
+    let input = document.querySelector('input');
+    input.addEventListener('keyup', function() {
+        $.get('/search?q=' + input.value, function(shows) {
+            document.querySelector('ul').innerHTML = shows;
+        });
+    });
+
+</script> -->
+
+{% endblock %}

@@ -1,0 +1,87 @@
+nav .navbar-brand
+{
+    /* size for brand */
+    font-size: xx-large;
+}
+
+/* Colors for brand */
+nav .navbar-brand .blue
+{
+    color: #537fbe;
+}
+nav .navbar-brand .red
+{
+    color: #ea433b;
+}
+nav .navbar-brand .yellow
+{
+    color: #f5b82e;
+}
+nav .navbar-brand .green
+{
+    color: #2e944b;
+}
+
+main .form-control
+{
+    /* Center form controls */
+    display: inline-block;
+
+    /* Override Bootstrap's 100% width for form controls */
+    width: auto;
+}
+
+main
+{
+    /* Scroll horizontally as needed */
+    overflow-x: auto;
+
+    /* Center contents */
+    text-align: center;
+}
+
+main img
+{
+    /* Constrain images on small screens */
+    max-width: 100%;
+}
+
+.result_box
+{
+    text-align: center;
+    font-size: xx-large;
+    height: 200px;
+    width: 50%;
+    background-color: rgb(236, 224, 211);
+}
+
+button {
+    padding      : 5px;
+    font         : bold .6em sans-serif;
+    border       : 2px solid #333;
+    border-radius: 5px;
+    background   : none;
+    cursor       : pointer;
+    transform    : rotate(-1.5deg);
+}
+
+button:after {
+content      : " >>>";
+}
+
+button:hover,
+button:focus {
+outline     : none;
+background  : #000;
+color       : #FFF;
+}
+
+output {
+    font-family: inherit;
+    font-size: xx-large;
+  }
+
+.jumbotron {
+    text-align: center;
+    background-color: antiquewhite;
+}
