@@ -1,9 +1,10 @@
-from ps4a import playGame
-from ps4a import HAND_SIZE, dealHand
+from PyDictionary import PyDictionary
+
 from ps4a import *
 from ps4b import *
 
-from cs50 import SQL
+import sqlite3
+
 from flask import Flask, flash, redirect, render_template, request, session, jsonify
 from tempfile import mkdtemp
 from flask_session import Session
@@ -22,7 +23,23 @@ from helpers import apology, login_required
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.secret_key="verysecret"
-# db = SQL("sqlite:///data.db")
+# con = sqlite3.connect('data.db')
+# cur = con.cursor()
+# con.close()
+
+# # Create table
+# cur.execute('''CREATE TABLE stocks
+#                (date text, trans text, symbol text, qty real, price real)''')
+
+# # Insert a row of data
+# cur.execute("INSERT INTO stocks VALUES ('2006-01-05','BUY','RHAT',100,35.14)")
+
+# # Save (commit) the changes
+# con.commit()
+
+# # We can also close the connection if we are done with it.
+# # Just be sure any changes have been committed or they will be lost.
+# 
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -42,13 +59,13 @@ def index():
 def about():
     return render_template("about.html")
 
-totalscore = 0
+
 
 
 @app.route("/thru", methods=['GET', 'POST'])
 def thru():
     wordList = loadWords()
-
+    dictionary=PyDictionary()
     if request.method == 'GET':
         # hand = request.args.get('hand')
         return render_template("thru.html")
@@ -58,22 +75,44 @@ def thru():
             out ="You send a blank form"
             mes =""
         else:
+            HAND_SIZE = 6
+
             if userInp== 'n':
                 hand = dealHand(HAND_SIZE)
                 session["hand"] = hand
+                session["hand_copy"] = hand.copy()
                 totalscore = 0
                 session['score'] = 0
                 out = displayHand(hand)
                 mes = "New Hand Dealt"
-            # if userInp == 'c':
-            #     hand = dealHand(HAND_SIZE)
-            #     session["hand"] = hand
-            #     totalscore = 0
-            #     session['score'] = 0
-            #     out = displayHand(hand)
-            #     mes = "New Hand Dealt"
-            #     mes, hand, totalscore = compPlayHand(hand, wordList, HAND_SIZE, totalScore)
-
+                return jsonify(out +"@"+ mes)
+            
+            elif userInp== 'r':
+                hand = session['hand_copy']
+                print("copy ", hand)
+                session["hand"] = hand
+                totalscore = 0
+                session['score'] = 0
+                out = displayHand(hand)
+                mes = "Hand replayed"
+                return jsonify(out +"@"+ mes)
+            
+            elif userInp == 'c':
+                wordDict = getWordDict(wordList, HAND_SIZE)
+                hand = session["hand"]
+                totalscore = session['score']
+                mes, hand, totalscore = compPlayHand(hand, wordList, HAND_SIZE, totalscore, wordDict)
+                word = mes.split(" ")[1]
+                meaning = dictionary.meaning(word)
+                if meaning != None:
+                    meaning= "Definition: " + str(list(meaning.values()))[2:-1]
+                else:
+                    meaning = ""
+                print("computer plays hand ", hand)
+                session['score'] = totalscore
+                session["hand"] = hand
+                out = displayHand(hand)
+                return jsonify(out +"@"+ mes + "@" + meaning)
 
             else:
                 hand = session["hand"]
@@ -82,8 +121,8 @@ def thru():
                 session['score'] = totalscore
                 session["hand"] = hand
                 out = displayHand(hand)
-                
-        return jsonify(out +" "+ mes)
+                return jsonify(out +"@"+ mes)
+        
 
 if __name__ == "__main__":
     app.run(debug=True)    

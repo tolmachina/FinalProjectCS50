@@ -80,7 +80,7 @@ def getWordDict(wordList,n):
 #
 # Computer plays a hand
 #
-def compPlayHand(hand, wordList, n, totalScore):
+def compPlayHand(hand, wordList, n, totalScore, wordDict):
     """
     Allows the computer to play the given hand, following the same procedure
     as playHand, except instead of the user choosing a word, the computer 
@@ -102,34 +102,36 @@ def compPlayHand(hand, wordList, n, totalScore):
     # Keep track of the total score
     
     # As long as there are still letters left in the hand:
-    while (calculateHandlen(hand) > 0) :
+    if (calculateHandlen(hand) > 0) :
         # Display the hand
-        mess = ("Current Hand: ", end=' ')
         
         # computer's word
         word = compChooseWord(hand, wordDict, n)
+        
         # If the input is a single period:
         if word == None:
             # End the game (break out of the loop)
-            break
+            message = ('Total score: ' + str(totalScore) + ' points. Run out of words.')
+
+            return message, hand, totalScore
             
         # Otherwise (the input is not a single period):
         else :
             # If the word is not valid:
             if (not isValidWordInDict(word, hand, wordDict)) :
-                print('This is a terrible error! I need to check my own code!')
-                break
+                message = ('This is a terrible error! I need to check my own code!')
+                
             # Otherwise (the word is valid):
             else :
                 # Tell the user how many points the word earned, and the updated total score 
                 score = getWordScore(word, n)
                 totalScore += score
-                print('"' + word + '" earned ' + str(score) + ' points. Total: ' + str(totalScore) + ' points')              
+                message = ('"' + word + '" earned ' + str(score) + ' points. Total: ' + str(totalScore) + ' points')              
                 # Update hand and show the updated hand to the user
                 hand = updateHand(hand, word)
-                print()
+                
     # Game is over (user entered a '.' or ran out of letters), so tell user the total score
-    print('Total score: ' + str(totalScore) + ' points.')
+    message = ('Word: ' + str(word) + " scored " + str(score) + '. Total score: ' +  str(totalScore))
     return message, hand, totalScore
     
 #
