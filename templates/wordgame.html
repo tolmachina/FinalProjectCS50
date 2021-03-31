@@ -1,0 +1,227 @@
+{% extends "layout.html" %}
+
+{%block title%}
+Word Game
+{% endblock %}
+
+{% block main %}
+<h1>
+    How many words do you know?
+</h1>
+<div>
+    Rules: To start game click "New Game". Enter a word from given letters. Longer words give more points.
+    After your game you can replay a hand - click "Replay Hand" and then click 
+    "Computer Play" to compare your result with computer. 
+    Or you can play with someone else in turns.More rules here <a id='morerules' href="#">more rules</a>.
+
+    <!-- <button type="button" id="new_hand_button">Click Me!</button> -->
+</div>
+<br>
+<p>
+    <button class="btn btn-outline-success" id="new_game"> New Game </button>
+    <button class="btn btn-outline-success" id="replay_game"> Replay Hand</button>
+    <button class="btn btn-outline-success" id="computer_game"> Computer Play</button>
+</p>
+
+<br>
+
+<div id="userInpDiv" class="data_entry">
+    <form action="{{ url_for('wordgame') }}" method="post" id="userInpForm" enctype="multipart/form-data">
+
+        <input name="userInp" maxlength="10" autocomplete="off" autofocus="on" class="input_box" required>
+
+        <input id="checkThroughputRate" type="submit" class='new-button-data' value="Send">
+    </form>
+</div>
+<br>
+
+<div class="jumbotron">
+    <h1 id="interface" class="display-4"></h1>
+</div>
+
+<div class="jumbotron">
+    <h1 id="messages" class="display-5"></h1>
+</div>
+
+<div class="jumbotron">
+    <h1 id="definition" class="display-6"></h1>
+</div>
+
+
+<table class="scoreboard">
+    <thead>
+        <tr>
+            <th>Player</th>
+            <th>Word</th>
+            <th>Score</th>
+            <th>Total Score</th>
+        </tr>
+    </thead>
+    <tbody id = 'scorebody'>
+
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    
+    $(function () {
+        $('#userInpForm').on('submit', function (e) {
+            e.preventDefault();
+
+            var form = $(this)[0];
+            var formData = new FormData(form);
+
+            $.ajax(
+            {
+                url: '/wordgame',
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) 
+                {
+                    console.log(data);
+                    document.getElementById('interface').innerText = data.game;
+                    document.getElementById('messages').innerText = data.message;
+                    document.getElementById('definition').innerText = data.definition;
+                    document.getElementById("userInpForm").reset();
+                    let html = "";
+                    for (let id in data.database)
+                    {
+                        let name = data.database[id].player;
+                        let word = data.database[id].word;
+                        let score = data.database[id].score;
+                        let totalScore = data.database[id].totalScore;
+                        html += '<tr>' +
+                            '<td>' + name + '</td>' +
+                            '<td>' + word + '</td>' +
+                            '<td>' + score + '</td>' +
+                            '<td>' + totalScore +'</td>'  +
+                            '</tr>';
+                    }
+                    document.getElementById('scorebody').innerHTML = html;
+                }
+            });
+        });
+    });
+    $(function () {
+        $('#new_game').on('click', function () {
+            // e.preventDefault();
+            var formData = {newgame : "n"};
+            $.ajax(
+            {
+                url: '/wordgame',
+                method: 'POST',
+                data: JSON.stringify(formData),
+                processData: false,
+                contentType: 'application/json',
+                success: function (data) 
+                {
+                    console.log(data);
+                    document.getElementById('interface').innerText = data.game;
+                    document.getElementById('messages').innerText = data.message;
+                    document.getElementById('definition').innerText = data.definition;
+                    document.getElementById("userInpForm").reset();
+                    let html = "";
+                    for (let id in data.database)
+                    {
+                        let name = data.database[id].player;
+                        let word = data.database[id].word;
+                        let score = data.database[id].score;
+                        let totalScore = data.database[id].totalScore;
+                        html += '<tr>' +
+                            '<td>' + name + '</td>' +
+                            '<td>' + word + '</td>' +
+                            '<td>' + score + '</td>' +
+                            '<td>' + totalScore +'</td>'  +
+                            '</tr>';
+                    }
+                    document.getElementById('scorebody').innerHTML = html;
+                }
+            });
+        });
+    });
+    $(function () {
+        $('#computer_game').on('click', function () {
+            // e.preventDefault();
+            var formData = {newgame : "c"};
+            $.ajax(
+            {
+                url: '/wordgame',
+                method: 'POST',
+                data: JSON.stringify(formData),
+                processData: false,
+                contentType: 'application/json',
+                success: function (data) 
+                {
+                    console.log(data);
+                    document.getElementById('interface').innerText = data.game;
+                    document.getElementById('messages').innerText = data.message;
+                    document.getElementById('definition').innerText = data.definition;
+                    document.getElementById("userInpForm").reset();
+                    let html = "";
+                    for (let id in data.database)
+                    {
+                        let name = data.database[id].player;
+                        let word = data.database[id].word;
+                        let score = data.database[id].score;
+                        let totalScore = data.database[id].totalScore;
+                        html += '<tr>' +
+                            '<td>' + name + '</td>' +
+                            '<td>' + word + '</td>' +
+                            '<td>' + score + '</td>' +
+                            '<td>' + totalScore +'</td>'  +
+                            '</tr>';
+                    }
+                    document.getElementById('scorebody').innerHTML = html;
+                }
+            });
+        });
+    });
+    $(function () {
+        $('#replay_game').on('click', function () {
+            // e.preventDefault();
+            var formData = {newgame : "r"};
+            $.ajax(
+            {
+                url: '/wordgame',
+                method: 'POST',
+                data: JSON.stringify(formData),
+                processData: false,
+                contentType: 'application/json',
+                success: function (data) 
+                {
+                    console.log(data);
+                    document.getElementById('interface').innerText = data.game;
+                    document.getElementById('messages').innerText = data.message;
+                    document.getElementById('definition').innerText = data.definition;
+                    document.getElementById("userInpForm").reset();
+                    let html = "";
+                    for (let id in data.database)
+                    {
+                        let name = data.database[id].player;
+                        let word = data.database[id].word;
+                        let score = data.database[id].score;
+                        let totalScore = data.database[id].totalScore;
+                        html += '<tr>' +
+                            '<td>' + name + '</td>' +
+                            '<td>' + word + '</td>' +
+                            '<td>' + score + '</td>' +
+                            '<td>' + totalScore +'</td>'  +
+                            '</tr>';
+                    }
+                    document.getElementById('scorebody').innerHTML = html;
+                }
+            });
+        });
+    });
+    $("#morerules").click(function(event){
+    alert("Each time you press New Game, a new hand is dealt with random letters. Total of 8 letter. Each time you guess a correct word, letters from this word will pop off your hand. Usually you will get more points for longer words. Computer will always try to get longest word. To win over computer best tactic is to get two words, which in sum will give more points then one longer word. Replay game always will repeat previous hand. New game always gives new hand. Computer can play on either. Computer has 83667 english words in his dictionary. ");
+    });
+
+</script>
+
+
+
+
+{% endblock %}

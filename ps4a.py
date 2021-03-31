@@ -239,6 +239,8 @@ def playHand(userInp, hand, wordList, n, totalscore):
             if isValidWord(userInp, hand, wordList) == False:
                 
                 message = f"Invalid word, please try again."
+                score = 0
+                out_word = None
                 # Reject invalid word (print a message followed by a blank line)
 
             # Otherwise (the word is valid):
@@ -247,13 +249,13 @@ def playHand(userInp, hand, wordList, n, totalscore):
                 totalscore = totalscore + score
                 message = f"{userInp} earned {score} points. Total:  {totalscore}"
                 # Tell the user how many points the word earned, and the updated total score, in one line followed by a blank line
-                
+                out_word = userInp
                 # Update the hand 
                 hand = updateHand(hand, userInp)
                 handsize = calculateHandlen(hand)
     else:
         message = f"Run out of letters. Total score: {totalscore} points."
-    return message, hand, totalscore
+    return message, hand, totalscore, score, out_word
     # Game is over (user entered a '.' or ran out of letters), so tell user the total score
 
 #

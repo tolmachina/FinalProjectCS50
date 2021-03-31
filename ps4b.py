@@ -112,15 +112,16 @@ def compPlayHand(hand, wordList, n, totalScore, wordDict):
         if word == None:
             # End the game (break out of the loop)
             message = ('Total score: ' + str(totalScore) + ' points. Run out of words.')
-
-            return message, hand, totalScore
+            score = 0
+            return message, hand, totalScore, score, word
             
         # Otherwise (the input is not a single period):
         else :
             # If the word is not valid:
             if (not isValidWordInDict(word, hand, wordDict)) :
                 message = ('This is a terrible error! I need to check my own code!')
-                
+                score = 0
+                word = None
             # Otherwise (the word is valid):
             else :
                 # Tell the user how many points the word earned, and the updated total score 
@@ -132,7 +133,7 @@ def compPlayHand(hand, wordList, n, totalScore, wordDict):
                 
     # Game is over (user entered a '.' or ran out of letters), so tell user the total score
     message = ('Word: ' + str(word) + " scored " + str(score) + '. Total score: ' +  str(totalScore))
-    return message, hand, totalScore
+    return message, hand, totalScore, score, word
     
 #
 # Problem #6: Playing a game
@@ -165,7 +166,7 @@ def playGame(wordDict, wordList):
     usrInp = ""
     usrInp1 = ""
     hand = None
-    totalscore = 0
+  
     
     while usrInp != 'e':
         usrInp = input("Enter n to deal a new hand, r to replay the last hand, or e to end game: ")

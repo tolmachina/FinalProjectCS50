@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+
+{%block title%}
+Hangman
+{% endblock %}
+
+{% block main %}
+<h1>
+    A game of Hangman
+</h1>
+<div>
+    Here <a id='morerules' href="#">rules</a>.
+</div>
+<br>
+<p>
+    <button class="btn btn-outline-success" id="new_game_hangman"> New Game </button>
+
+</p>
+
+<br>
+
+<div id="userInpDiv" class="data_entry">
+    <form action="{{ url_for('hang') }}" method="post" id="userInpForm_hangman" enctype="multipart/form-data">
+
+        <input name="userInp" maxlength="1" autocomplete="off" autofocus="on" class="input_box" required>
+
+        <input id="checkThroughputRate" type="submit" class='new-button-data' value="Send">
+    </form>
+</div>
+<br>
+
+<div class="jumbotron">
+    <p id="interface" class="lead"></p>
+</div>
+
+<div class="jumbotron jumbotron-fluid"">
+    <h6 id="messages" class="display-6"></h6>
+</div>
+
+
+<script type="text/javascript">
+    
+    $(function () {
+        $('#userInpForm_hangman').on('submit', function (e) {
+            e.preventDefault();
+
+            var form = $(this)[0];
+            var formData = new FormData(form);
+
+            $.ajax(
+            {
+                url: '/hang',
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (game) 
+                {
+                    console.log(game);
+                    gametext = game.message + '  ' + game.guesses;
+                    document.getElementById('interface').innerText = gametext;
+                    document.getElementById('messages').innerText = game.guessed_word;
+                    
+                    document.getElementById("userInpForm_hangman").reset();         
+                }
+            });
+        });
+    });
+    $(function () {
+        $('#new_game_hangman').on('click', function () {
+            var startGame = {newgame : "1"};
+            $.ajax(
+            {
+                url: '/hang',
+                method: 'POST',
+                data: JSON.stringify(startGame),
+                processData: false,
+                contentType: 'application/json',
+                success: function (game) 
+                {
+                    console.log(game);
+                    document.getElementById('interface').innerText = game.welcome;
+                    document.getElementById('messages').innerText = game.guessed_letters;
+    
+                    document.getElementById("userInpForm_hangman").reset();
+
+                }
+            });
+        });
+    });
+    
+    $("#morerules").click(function(event){
+    alert("You need to guess secret word one letter at a time. You have limited number of attempts. Don't make mistakes");
+    });
+
+</script>
+
+
+
+
+{% endblock %}

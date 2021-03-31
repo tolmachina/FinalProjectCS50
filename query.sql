@@ -5,5 +5,6 @@ word TEXT,
 score INTEGER,
 totalScore INTEGER,
 date DATETIME,
+PRIMARY KEY(id)
 );
 

@@ -1,31 +1,23 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Word Game
+    Home
 {% endblock %}
 
 {% block main %}
 <div>
     <h1>
-        How many words do you know?
+        Projects by ET.
     </h1>
-    <div>
-        Rules: Enter n to deal a new hand, r to replay the last hand, or e to end game.
-    </div>
-    <form action="/" method="post">
-        <div class="form-group">
-            <input autocomplete="off" autofocus class="form-control" name="usrInp" placeholder="Symbol" type="text">       
-        </div>
-        <button name='submit' class="btn btn-primary" type='submit'>submit</button>
-        <!-- <button name='new hand' class="btn btn-primary" type='button'>New Hand</button>
-        <button name='replay' class="btn btn-primary" type='button'>Replay</button>
-        <button name='end game' class="btn btn-primary" type='button'>End Game</button> -->
+    <ul>
+        <li><a href="wordgame">Word Game.</a></li>
+        <li>Hangman(In progress)</li>
+        <li>News(In progress)</li>
+        <li>Ai Niika(In progress)</li>
+    </ul>
+  
+</div>
 
-    </form>
-</div>
-<div>
-    {{ output }}
-</div>
 
 
 
