@@ -22,7 +22,7 @@ Hangman
 <div id="userInpDiv" class="data_entry">
     <form action="{{ url_for('hang') }}" method="post" id="userInpForm_hangman" enctype="multipart/form-data">
 
-        <input name="userInp" maxlength="1" autocomplete="off" autofocus="on" class="input_box" required>
+        <input name="userInp" maxlength="1" pattern="[A-Za-z]"autocomplete="off" autofocus="on" class="input_box" required>
 
         <input id="checkThroughputRate" type="submit" class='new-button-data' value="Send">
     </form>

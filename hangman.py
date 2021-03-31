@@ -1,34 +1,10 @@
-# Problem Set 2, hangman.py
-# Name: 
-# Collaborators:
-# Time spent:
-
-# Hangman Game
+# Hangman Game from MITx
 # -----------------------------------
 
 import random
 import string
 
 WORDLIST_FILENAME = "WordGame/words.txt"
-
-
-def load_words():
-    """
-    Returns a list of valid words. Words are strings of lowercase letters.
-    
-    Depending on the size of the word list, this function may
-    take a while to finish.
-    """
-    print("Loading word list from file...")
-    # inFile: file
-    inFile = open(WORDLIST_FILENAME, 'r')
-    # line: string
-    line = inFile.readline()
-    # wordlist: list of strings
-    wordlist = line.split()
-    print("  ", len(wordlist), "words loaded.")
-    return wordlist
-
 
 
 def choose_word(wordlist):
@@ -68,8 +44,6 @@ def isWordGuessed(secretWord, guessed_letters):
     else:
         return False
  
-
-
 
 def getGuessedWord(secretWord, guessed_letters):
     '''

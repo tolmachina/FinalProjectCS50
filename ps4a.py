@@ -36,6 +36,7 @@ def loadWords():
     print("  ", len(wordList), "words loaded.")
     return wordList
 
+
 def getFrequencyDict(sequence):
     """
     Returns a dictionary where the keys are elements of the sequence
@@ -51,6 +52,7 @@ def getFrequencyDict(sequence):
         freq[x] = freq.get(x,0) + 1
     return freq
 	
+
 def getWordScore(word, n):
     """
     Returns the score for a word. Assumes the word is a valid word.
@@ -75,6 +77,7 @@ def getWordScore(word, n):
         score += 50
     return score
 
+
 def displayHand(hand):
     """
     Displays the letters currently in the hand.
@@ -93,6 +96,7 @@ def displayHand(hand):
         for j in range(hand[letter]):
             hand_string += letter      # print all on the same line
     return hand_string                            # print an empty line
+
 
 def dealHand(n):
     """
@@ -119,9 +123,8 @@ def dealHand(n):
         
     return hand
 
-#
+
 # Problem #2: Update a hand by removing letters
-#
 def updateHand(hand, word):
     """
     Assumes that 'hand' has all the letters in word.
@@ -145,10 +148,7 @@ def updateHand(hand, word):
     return result
 
 
-#
 # Problem #3: Test word validity
-#
-
 def isValidWord(word, hand, wordList):
     """
     Returns True if word is in the wordList and is entirely
@@ -174,10 +174,7 @@ def isValidWord(word, hand, wordList):
         return False
 
 
-#
 # Problem #4: Playing a hand
-#
-
 def calculateHandlen(hand):
     """ 
     Returns the length (number of letters) in the current hand.
@@ -186,8 +183,6 @@ def calculateHandlen(hand):
     returns: integer
     """
     return sum(hand.values())
-
-
 
 
 def playHand(userInp, hand, wordList, n, totalscore):
@@ -212,7 +207,6 @@ def playHand(userInp, hand, wordList, n, totalscore):
       n: integer (HAND_SIZE; i.e., hand size required for additional points)
       
     """
-
     # Keep track of the total score
     userCanceled = False
     message = ""
@@ -225,24 +219,14 @@ def playHand(userInp, hand, wordList, n, totalscore):
             # End the game (break out of the loop)
             message = f"Goodbye! Total score: {totalscore}, points."
             hand = {}
-            
-        # elif userInp == 'n':
-        #     hand = dealHand(HAND_SIZE)
-        #     hand_string = displayHand(hand)
-        #     outhand = hand_string
-
         # Otherwise (the input is not a single period):
         else:
-            
-            # outhand = hand_string
             # If the word is not valid:
             if isValidWord(userInp, hand, wordList) == False:
-                
                 message = f"Invalid word, please try again."
                 score = 0
                 out_word = None
                 # Reject invalid word (print a message followed by a blank line)
-
             # Otherwise (the word is valid):
             else:
                 score = getWordScore(userInp, n)
@@ -257,54 +241,3 @@ def playHand(userInp, hand, wordList, n, totalscore):
         message = f"Run out of letters. Total score: {totalscore} points."
     return message, hand, totalscore, score, out_word
     # Game is over (user entered a '.' or ran out of letters), so tell user the total score
-
-#
-# Problem #5: Playing a game
-# 
-
-def playGame(usrInp, wordList, hand):
-    """
-    Allow the user to play an arbitrary number of hands.
-
-    1) Asks the user to input 'n' or 'r' or 'e'.
-    * If the user inputs 'n', let the user play a new (random) hand.
-    * If the user inputs 'r', let the user play the last hand again.
-    * If the user inputs 'e', exit the game.
-    * If the user inputs anything else, tell them their input was invalid.
-
-    2) When done playing the hand, repeat from step 1    
-    """
-
-    if (usrInp=='n' or usrInp=='e' or usrInp=='r') and hand == None:
-        "Enter n to deal a new hand, r to replay the last hand, or e to end game."
-        if usrInp == "r" and hand == None:
-            out =  'You have not played a hand yet. Please play a new hand first!'
-            return out
-        elif usrInp == 'r' and hand != None:
-            out = playHand(hand, wordList, HAND_SIZE)
-            return out
-        elif usrInp == 'n':
-            hand = dealHand(HAND_SIZE)
-            return hand 
-
-        elif usrInp == 'e':
-            out = "End Game"
-            return out
-        elif usrInp !='n' or usrInp !='e' or usrInp != 'r':
-            out = "Invalid Command"
-            return out
-
-    if userInp and hand != None:
-        out = playHand(hand, wordList, HAND_SIZE)
-        return out
-      
-
-
-
-#
-# Build data structures used for entire session and play game
-#
-if __name__ == '__main__':
-    userInp = input("User input: ")
-    wordList = loadWords()
-    playGame(userInp, wordList)

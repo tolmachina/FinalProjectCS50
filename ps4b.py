@@ -2,12 +2,7 @@ from ps4a import *
 import time
 
 
-
-# EVGENY TOLMACHEV
-#
 # Computer chooses a word
-#
-#
 def compChooseWord(hand, wordDict, n):
     """
     Given a hand and a wordList, find the word that gives 
@@ -25,12 +20,12 @@ def compChooseWord(hand, wordDict, n):
     returns: string or None
     """
     # Create a new variable to store the maximum score seen so far (initially 0)
+    
     bestScore = 0
     # Create a new variable to store the best word seen so far (initially None)  
-    bestWord = None
 
+    bestWord = None
     # For each word in the wordList
-    
     
     for word in wordDict:
         # If you can construct the word from your hand
@@ -69,17 +64,16 @@ def isValidWordInDict(word, hand, wordDict):
     else:
         return False
 
+
 def getWordDict(wordList,n):
     wordDict= {}
-
     for word in wordList:
         score = getWordScore(word,n)
         wordDict[word] = score
     return wordDict
 
-#
+
 # Computer plays a hand
-#
 def compPlayHand(hand, wordList, n, totalScore, wordDict):
     """
     Allows the computer to play the given hand, following the same procedure
@@ -99,15 +93,12 @@ def compPlayHand(hand, wordList, n, totalScore, wordDict):
     n: list (string)
     n: integer (HAND_SIZE; i.e., hand size required for additional points)
     """
-    # Keep track of the total score
-    
     # As long as there are still letters left in the hand:
     if (calculateHandlen(hand) > 0) :
-        # Display the hand
-        
+
         # computer's word
         word = compChooseWord(hand, wordDict, n)
-        
+
         # If the input is a single period:
         if word == None:
             # End the game (break out of the loop)
@@ -135,10 +126,8 @@ def compPlayHand(hand, wordList, n, totalScore, wordDict):
     message = ('Word: ' + str(word) + " scored " + str(score) + '. Total score: ' +  str(totalScore))
     return message, hand, totalScore, score, word
     
-#
+
 # Problem #6: Playing a game
-#
-#
 def playGame(wordDict, wordList):
     """
     Allow the user to play an arbitrary number of hands.
@@ -160,14 +149,13 @@ def playGame(wordDict, wordList):
           game with the selected hand, using compPlayHand.
 
     4) After the computer or user has played the hand, repeat from step 1
-
+    
     wordList: list (string)
     """
     usrInp = ""
     usrInp1 = ""
     hand = None
   
-    
     while usrInp != 'e':
         usrInp = input("Enter n to deal a new hand, r to replay the last hand, or e to end game: ")
         if usrInp !='r' and usrInp !='n' and usrInp !='e':
@@ -199,21 +187,3 @@ def playGame(wordDict, wordList):
                 hand = dealHand(HAND_SIZE)
                 compPlayHand(hand,wordDict,HAND_SIZE)
                 break
-
-# elif usrInp == "r" and usrInp1 == 'c' and hand == None:
-#     print('You have not played a hand yet. Please play a new hand first!')
-#     continue
-
-
-
-
-        
-#
-# Build data structures used for entire session and play game
-#
-if __name__ == '__main__':
-    wordList = loadWords()
-    wordDict = getWordDict(wordList, HAND_SIZE)
-    playGame(wordDict,wordList)
-
-
