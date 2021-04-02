@@ -1,9 +1,6 @@
 import sqlite3
 import os
-# import numpy as np
-# import matplotlib.pyplot as plt
 
-# from wordcloud import WordCloud, STOPWORDS
 from PyDictionary import PyDictionary
 from ps4a import loadWords, dealHand, displayHand, playHand
 from ps4b import getWordDict, compPlayHand
@@ -13,6 +10,7 @@ from datetime import datetime, timezone
 from flask import Flask, flash, redirect, render_template, request, session, url_for, jsonify
 from tempfile import mkdtemp
 from flask_session import Session
+from helpers import *
 
 app = Flask(__name__)
 app.config["SESSION_PERMANENT"] = False
@@ -21,7 +19,6 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.secret_key="b'\xa5\xa9\x1e\x0e\t3\xa4\x18^\xba\x08\xf7\xb1\xd0\xadG'"
 
 Session(app)
-
 
 # main page
 @app.route("/")

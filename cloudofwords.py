@@ -23,7 +23,6 @@ def generate_cloud():
             words.append(word)
     con.close()
     text = ' '.join(word for word in words)
-    print(text)
 
     # makes the circle using numpy
     x, y = np.ogrid[:300, :300]
@@ -51,7 +50,6 @@ def generate_cloud():
     # delete previous files
     for filename in os.listdir("static/images/"):
         if filename != image_name: 
-            print(filename)
             os.remove("static/images/{}".format(filename))
         else:
             continue
