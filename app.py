@@ -1,14 +1,16 @@
+import sqlite3
+import os
+# import numpy as np
+# import matplotlib.pyplot as plt
+
+# from wordcloud import WordCloud, STOPWORDS
 from PyDictionary import PyDictionary
-
-
 from ps4a import loadWords, dealHand, displayHand, playHand
 from ps4b import getWordDict, compPlayHand
 from hangman import hangman, choose_word, isWordGuessed
-
+from cloudofwords import generate_cloud
 from datetime import datetime, timezone
-import sqlite3
-
-from flask import Flask, flash, redirect, render_template, request, session, jsonify
+from flask import Flask, flash, redirect, render_template, request, session, url_for, jsonify
 from tempfile import mkdtemp
 from flask_session import Session
 
@@ -16,102 +18,15 @@ app = Flask(__name__)
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-app.secret_key="verysecret"
+app.secret_key="b'\xa5\xa9\x1e\x0e\t3\xa4\x18^\xba\x08\xf7\xb1\xd0\xadG'"
 
 Session(app)
 
 
-
-
-#data = [(Player, Word, Score, totalscore, date)]
-#helper function for sql
-def dict_factory(cursor, row):
-    d = {}
-    for idx, col in enumerate(cursor.description):
-        d[col[0]] = row[idx]
-    return d
-# sql get
-def dbGet():
-    try:
-        con = sqlite3.connect("data.db")
-        con.row_factory = dict_factory
-        cur = con.cursor()
-        cur.execute("select * from scoreboard  ORDER BY ID DESC LIMIT 10")
-        table = cur.fetchall()
-        con.close()
-        return table
-    except:
-        print("Error Connecting to Database")
-        return None
-    # Create table
-    # cur.execute('''CREATE TABLE stocks
-    #                (date text, trans text, symbol text, qty real, price real)''')
-
-    # Insert a row of data
-    # cur.execute("INSERT INTO stocks VALUES ('2006-01-05','BUY','RHAT',100,35.14)")
-
-    # Save (commit) the changes
-    # con.commit()
-
-    # We can also close the connection if we are done with it.
-    # Just be sure any changes have been committed or they will be lost.
-    # 
-
-# sql insert 
-def dbIns(data):
-    try:
-        con = sqlite3.connect('data.db')
-        con.executemany("INSERT INTO scoreboard(player,word,score,totalScore,date) VALUES (?,?,?,?,?)", data)
-        con.commit()
-        con.close()
-        return True
-    except:
-        print("Error Connecting to Database")
-        return False
-
-# text filter for definitions
-def filter(string):
-    grid = "[{}]<>()"
-    result = ""
-    for s in string:
-        if s not in grid:
-            result += s
-    return result
-
-# using PyDict for word definitions
-def getWordDefinition(secretword):
-    
-    dictionary=PyDictionary()
-    meaning = dictionary.meaning(secretword)
-    if meaning != None:
-        meaning= filter(" Definition: " + str(list(meaning.values()))[2:-1])
-    else:
-        meaning = ""
-    return meaning
-
-# helper for hangman
-def new_hangman(userInp, wordList):
-    """
-    Starts the game of hangman
-    Returns Dict
-    """
-    guessed_letters = []
-    mistakesMade = 0
-    session['mistakesMade'] = mistakesMade
-    session['guessed_letters']= guessed_letters
-    
-    secretword = choose_word(wordList)
-    session['secretword'] = secretword
-    
-    welcome =f"Welcome to the game Hangman! I am thinking of a word that is {len(secretword)} letters long. You have {int(len(secretword) + 1)} guesses."
-    
-    inpdata = {'secretWord': secretword, 'userInp' : userInp, "guessed_letters" : guessed_letters, 'mistakesMade' : mistakesMade}
-    inpdata['welcome'] = welcome
-    return inpdata
-
 # main page
 @app.route("/")
 def index():
+    generate_cloud()
     return render_template("index.html")
 
 # about info
@@ -124,6 +39,7 @@ def about():
 def hang():
     # render page
     if request.method == 'GET':
+        session['user'] = 'Human'
         return render_template("hang.html")
     # game
     else:
@@ -134,7 +50,7 @@ def hang():
             # if button wasn't pressed but letter was inputted
             try:
                 userInp = request.form['userInp']
-                if userInp:
+                if request.form['userInp'] and not request.json['newgame'] :
                     game = {}
                     game['message'] = "Press New Game"
                     game['guesses'] = ""
@@ -178,6 +94,13 @@ def hang():
             game['message'] = message
             # game['guesses'] = message about how many guesses left
             game['guesses'] = ''
+            date = datetime.now(timezone.utc)
+            score = 0
+            totalscore = 0
+            user_name = session['username']
+            data = [user_name, secretword, score, totalscore, date]
+            flag=dbIns(data)
+        
             return jsonify(game)
         
         # if run out of letters
@@ -186,15 +109,40 @@ def hang():
             game['message'] = game.get('message') + meaning
         return jsonify(game)
 
+@app.route('/logout')
+def logout():
+    # remove the username from the session if it's there
+    session.pop('username', None)
+    return redirect(url_for('index'))
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        session['username'] = request.form['username']
+        dbCreate(session['username'])
+        return redirect(url_for('wordgame'))
+    else:
+        return render_template("login.html")
 
 # game of WORDGAME
 @app.route("/wordgame", methods=['GET', 'POST'])
 def wordgame():
+    print("WORDGAME!")
+    try:
+        print("USER", session['username'])
+    except:
+        print("no user name")
+    try:
+        user_name = session['username']
+    except:
+        user_name = "username"
+
     if request.method == 'GET':
-        scoreboard = dbGet()
+        scoreboard = dbGet(user_name)
         return render_template("wordgame.html", scoreboard=scoreboard)
     
     elif request.method == 'POST':
+
         try:
             # always check for new game first
             userInp = request.json['newgame']
@@ -220,10 +168,9 @@ def wordgame():
             out = displayHand(hand)
             mes = "New Hand Dealt"
             # talk to SQL
-            scoreboard = dbGet()
-            data = dbGet()
+            scoreboard = dbGet(user_name)
             # send data to user
-            return jsonify(game = out, message = mes, database = data )
+            return jsonify(game = out, message = mes, database = scoreboard )
         
         # replay game
         elif userInp== 'r':
@@ -236,7 +183,7 @@ def wordgame():
             out = displayHand(hand)
             mes = "Hand replayed"
             # talk to SQL
-            data = dbGet()
+            data = dbGet(user_name)
             # send data to user
             return jsonify(game = out, message = mes, database = data )
         
@@ -248,14 +195,14 @@ def wordgame():
             totalscore = session['score']
             #play function
             mes, hand, totalscore, score, word = compPlayHand(hand, wordList, HAND_SIZE, totalscore, wordDict)
-            #meaning from dictionary:
             if word != None:
-                meaning = getWordDefinition(secretword)
-            
+                #meaning from dictionary:
+                meaning = getWordDefinition(word)
                 #get date time and write to database:
                 date = datetime.now(timezone.utc)
-                data = [("Computer", word, score, totalscore, date)]
-                flag=dbIns(data)
+                ai_name = 'Computer'
+                data = [ai_name, word, score, totalscore, date]
+                flag=dbInsComputer(user_name, data)
                 if flag == False:
                     print("Data NOT inserted")
             else:
@@ -268,7 +215,7 @@ def wordgame():
             out = displayHand(hand)
 
             #send json to client:
-            data = dbGet()
+            data = dbGet(user_name)
             return jsonify(game = out, message = mes, database = data, definition = meaning)
 
         # user plays
@@ -286,7 +233,11 @@ def wordgame():
             # insert into database and get definition
             if out_word != None:
                 date = datetime.now(timezone.utc)
-                data = [("username", out_word, score, totalscore, date)]
+                try:
+                    user_name = session['username']
+                except:
+                    user_name = "username"
+                data = [user_name, out_word, score, totalscore, date]
                 flag=dbIns(data)
                 if flag == False:
                     print("Data NOT inserted")
@@ -297,14 +248,15 @@ def wordgame():
                     meaning = ""
             else:
                 meaning = ""
-            data = dbGet()
+            data = dbGet(user_name)
             # send info to user
             return jsonify(game = out, message = mes, database = data,definition = meaning )
        
 
 @app.route("/news")
 def news():
-    return render_template("news.html")
+    image_name=generate_cloud()
+    return render_template("news.html", image_name=image_name)
 
 if __name__ == "__main__":
     app.run(debug=True)    

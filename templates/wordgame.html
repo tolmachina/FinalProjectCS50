@@ -38,20 +38,18 @@ Word Game
 <br>
 
 <div class="jumbotron">
-    <h1 id="interface" class="display-4"></h1>
+    <h2 id="interface" class="display-4"></h2>
 </div>
 
 <div class="jumbotron">
-    <h1 id="messages" class="display-5"></h1>
+    <h4 id="messages" class="display-6"></h4>
 </div>
 
 <div class="jumbotron">
-    <h1 id="definition" class="display-6"></h1>
+    <p id="definition" ></p>
 </div>
 
-<form action="{{ url_for('wordgame') }}" method="post" id="userNameInp" enctype="multipart/form-data">
-    <input name="userName" minlength="2" maxlength="10" autocomplete="off" autofocus="on" class="input_box">
-</form>
+
 
 <table class="scoreboard">
     <thead>
@@ -68,28 +66,6 @@ Word Game
 </table>
 
 <script type="text/javascript">
-     $(function () {
-        $('#userNameInp').on('submit', function (e) {
-            e.preventDefault();
-
-            var form = $(this)[0];
-            var formData = new FormData(form);
-
-            $.ajax(
-            {
-                url: '/wordgame',
-                method: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (data) 
-                {
-                    console.log(data);
-                }
-            });
-        });
-    });
-
     $(function () {
         $('#userInpForm').on('submit', function (e) {
             e.preventDefault();
