@@ -23,7 +23,6 @@ Session(app)
 # main page
 @app.route("/")
 def index():
-    generate_cloud()
     return render_template("index.html")
 
 # about info
@@ -109,8 +108,11 @@ def hang():
 @app.route('/logout')
 def logout():
     # remove the username from the session if it's there
-    session.pop('username', None)
-    return redirect(url_for('index'))
+    try:
+        session.pop('username', None)
+        return render_template("logout.html")
+    except:
+        return render_template("logoutB.html")
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -132,11 +134,11 @@ def wordgame():
     try:
         user_name = session['username']
     except:
-        user_name = "username"
+        user_name = "Anonymous"
 
     if request.method == 'GET':
         scoreboard = dbGet(user_name)
-        return render_template("wordgame.html", scoreboard=scoreboard)
+        return render_template("wordgame.html", scoreboard=scoreboard, username=user_name)
     
     elif request.method == 'POST':
 

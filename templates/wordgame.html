@@ -5,6 +5,7 @@ Word Game
 {% endblock %}
 
 {% block main %}
+<p>Hello, {{ username }}</p>
 <h1>
     How many words do you know?
 </h1>
@@ -12,9 +13,7 @@ Word Game
     Rules: To start game click "New Game". Enter a word from given letters. Longer words give more points.
     After your game you can replay a hand - click "Replay Hand" and then click 
     "Computer Play" to compare your result with computer. 
-    Or you can play with someone else in turns.More rules here <a id='morerules' href="#">more rules</a>.
-
-    <!-- <button type="button" id="new_hand_button">Click Me!</button> -->
+    Or you can play with someone else in turns. More rules here <a id='morerules' href="#">more rules</a>. To keep score - <a href="/login"> login</a>.
 </div>
 <br>
 <p>
@@ -22,14 +21,10 @@ Word Game
     <button class="btn btn-outline-success" id="replay_game"> Replay Hand</button>
     <button class="btn btn-outline-success" id="computer_game"> Computer Play</button>
 </p>
-
 <br>
-
 <div id="userInpDiv" class="data_entry">
     <form action="{{ url_for('wordgame') }}" method="post" id="userInpForm" enctype="multipart/form-data">
 
-        
-        
         <input name="userInp" minlength="2" maxlength="10" autocomplete="off" autofocus="on" class="input_box" required>
 
         <input id="checkThroughputRate" type="submit" class='new-button-data' value="Send">
@@ -49,8 +44,6 @@ Word Game
     <p id="definition" ></p>
 </div>
 
-
-
 <table class="scoreboard">
     <thead>
         <tr>
@@ -61,7 +54,6 @@ Word Game
         </tr>
     </thead>
     <tbody id = 'scorebody'>
-
     </tbody>
 </table>
 
@@ -222,8 +214,5 @@ Word Game
     });
 
 </script>
-
-
-
 
 {% endblock %}
