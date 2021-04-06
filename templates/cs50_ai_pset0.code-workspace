@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../../../HarvardX CS50AI/src0"
+		},
+		{
+			"path": "../../../HarvardX CS50AI/pset0/tictactoe"
 		}
 	],
 	"settings": {}
