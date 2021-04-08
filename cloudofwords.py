@@ -56,5 +56,42 @@ def generate_cloud():
 
     return image_name
 
-generate_cloud()
+
+def word_count(words):
+    result=[]
+    for word in words:
+        pair = [word, words.count(word)]
+        if pair not in result:
+            result.append(pair)
+    return result
+
+
+def get_words():
+    con = sqlite3.connect('data.db')
+    cur = con.cursor()
+    cur.execute('SELECT name from sqlite_master where type= "table"')
+    buffer=cur.fetchall()
+    tables=[table[0] for table in buffer]
+    words = []
+    for i in range(len(tables)):
+        cur.execute("SELECT word from "+tables[i]+";")
+        buffer=cur.fetchall()
+        filter=[word[0] for word in buffer]
+        for word in filter:
+            words.append(word)
+    con.close()
+    text = "_".join(words)
+    words_count = word_count(words)
+    return text
+
+def word_count(words):
+    result=[]
+    for word in words:
+        pair = [word, words.count(word)]
+        if pair not in result:
+            result.append(pair)
+    return result
+
+get_words()
+
 

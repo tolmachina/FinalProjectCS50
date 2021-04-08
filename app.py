@@ -1,11 +1,12 @@
 import sqlite3
 import os
+import json
 
 from PyDictionary import PyDictionary
 from ps4a import loadWords, dealHand, displayHand, playHand
 from ps4b import getWordDict, compPlayHand
 from hangman import hangman, choose_word, isWordGuessed
-from cloudofwords import generate_cloud
+from cloudofwords import generate_cloud, get_words
 from datetime import datetime, timezone
 from flask import Flask, flash, redirect, render_template, request, session, url_for, jsonify
 from tempfile import mkdtemp
@@ -74,10 +75,16 @@ def hang():
         
         # create dict for game engine which is in ps4 file's
         inpData = {'secretWord': secretword, 'userInp' : userInp, "guessed_letters" : guessed_letters, 'mistakesMade' : mistakesMade }
-        
+        print("INPUT: ", inpData)
         # send data and get result of game state
         game = hangman(inpData)
-        
+        print("\nGAME: ", game)
+        # check if run out of letters
+        if game['ranout'] == 1:
+            meaning = getWordDefinition(secretword)
+            game['message'] = game.get('message') + meaning
+            return jsonify(game)
+
         # write state to session
         session['guessed_letters'] = game['guessed_letters']
         session['mistakesMade'] = game['mistakesMade']
@@ -93,16 +100,15 @@ def hang():
             date = datetime.now(timezone.utc)
             score = 0
             totalscore = 0
-            user_name = session['username']
+            try:
+                user_name = session['username']
+            except:
+                user_name = 'Hangman'
             data = [user_name, secretword, score, totalscore, date]
             flag=dbIns(data)
         
             return jsonify(game)
         
-        # if run out of letters
-        elif game['ranout'] == 1:
-            meaning = getWordDefinition(secretword)
-            game['message'] = game.get('message') + meaning
         return jsonify(game)
 
 @app.route('/logout')
@@ -254,8 +260,10 @@ def wordgame():
 
 @app.route("/news")
 def news():
-    image_name=generate_cloud()
-    return render_template("news.html", image_name=image_name)
+    # image_name=generate_cloud()
+    data = get_words()
+    print(data)
+    return render_template("news.html", data=data)
 
 if __name__ == "__main__":
     app.run(debug=False)    

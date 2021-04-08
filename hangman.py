@@ -130,48 +130,46 @@ def hangman(inpData):
     guesses = int(len(secretWord) + 1)
     available_letters = ''.join(getAvailableLetters(guessed_letters))
     guessed_word = getGuessedWord(secretWord, guessed_letters)
-
-    # the game begins
-    if guesses - mistakesMade > 0:
-      
-      
-      game['guesses'] = (f"You have {guesses - mistakesMade} guesses left")
-      # game ['mesletters'] = ("Available Letters: ", available_letters )
-      
-      user_letter = userInp.lower()
-
-      if user_letter.isalpha() == False:
-        mistakesMade += 1
-        message = ('Oops! That letter is not in my word. ')
-        game['message'] = message
-        game['mistakesMade'] = mistakesMade
-
-      elif user_letter in guessed_letters:
-        message = ("Oops! You've already guessed that letter.")
-        game['message'] = message
+    user_letter = userInp.lower()
     
+    # the game begins
 
-      guessed_letters.append(user_letter)
-      game['guessed_letters'] = guessed_letters
-      available_letters = getAvailableLetters(guessed_letters)
-      game['available_letters'] = available_letters
-      guessed_word = getGuessedWord(secretWord, guessed_letters)
-      game['guessed_word'] = guessed_word
-
-
-      if user_letter in secretWord:
-        message = ("Good guess!")
-        game['message'] = message
-      else:
-        message = ("Oops! That letter is not in my word.")
-        game['message'] = message
-        mistakesMade += 1
-        game['mistakesMade'] = mistakesMade
-      
-      if guesses - mistakesMade == 0:
-        message = (f"Sorry, you ran out of guesses. The word was {secretWord}.")
-        game['ranout'] = 1
-        game['message'] = message
-        game['guesses'] = ""
-      print(game)
+    game['guesses'] = (f"You have {guesses - mistakesMade} guesses left")
+    
+    # check if no more guesses
+    if guesses - mistakesMade < 1:
+      print("NO MORE LETTERS")
+      message = (f"Sorry, you ran out of guesses. The word was {secretWord}.")
+      game['ranout'] = 1
+      game['message'] = message
+      game['guesses'] = ""
       return game
+    
+    if user_letter.isalpha() == False:
+      mistakesMade += 1
+      message = ('Oops! That letter is not in my word. ')
+      game['message'] = message
+      game['mistakesMade'] = mistakesMade
+
+    elif user_letter in guessed_letters:
+      message = ("Oops! You've already guessed that letter.")
+      game['message'] = message
+  
+    guessed_letters.append(user_letter)
+    game['guessed_letters'] = guessed_letters
+    available_letters = getAvailableLetters(guessed_letters)
+    game['available_letters'] = available_letters
+    guessed_word = getGuessedWord(secretWord, guessed_letters)
+    game['guessed_word'] = guessed_word
+
+    if user_letter in secretWord:
+      message = ("Good guess!")
+      game['message'] = message
+
+    else:
+      message = ("Oops! That letter is not in my word.")
+      game['message'] = message
+      mistakesMade += 1
+      game['mistakesMade'] = mistakesMade
+    
+    return game
