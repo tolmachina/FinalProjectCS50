@@ -5,11 +5,10 @@ import json
 from PyDictionary import PyDictionary
 from ps4a import loadWords, dealHand, displayHand, playHand
 from ps4b import getWordDict, compPlayHand
-from hangman import hangman, choose_word, isWordGuessed
-from cloudofwords import generate_cloud, get_words
+from hangman import hangman, isWordGuessed
+from cloudofwords import get_words
 from datetime import datetime, timezone
-from flask import Flask, flash, redirect, render_template, request, session, url_for, jsonify
-from tempfile import mkdtemp
+from flask import Flask, redirect, render_template, request, session, url_for, jsonify
 from flask_session import Session
 from helpers import *
 
@@ -30,6 +29,31 @@ def index():
 @app.route("/about")
 def about():
     return render_template("about.html")
+
+@app.route('/logout')
+def logout():
+    # remove the username from the session if it's there
+    try:
+        session.pop('username', None)
+        return render_template("logout.html")
+    except:
+        return render_template("logoutB.html")
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        session['username'] = request.form['username']
+        dbCreate(session['username'])
+        return redirect(url_for('wordgame'))
+    else:
+        return render_template("login.html")
+
+
+@app.route("/news")
+def news():
+    data = get_words()
+    return render_template("news.html", data=data)
+
 
 # game of HANGMAN
 @app.route("/hang", methods=['GET', 'POST'])
@@ -111,23 +135,7 @@ def hang():
         
         return jsonify(game)
 
-@app.route('/logout')
-def logout():
-    # remove the username from the session if it's there
-    try:
-        session.pop('username', None)
-        return render_template("logout.html")
-    except:
-        return render_template("logoutB.html")
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        session['username'] = request.form['username']
-        dbCreate(session['username'])
-        return redirect(url_for('wordgame'))
-    else:
-        return render_template("login.html")
 
 # game of WORDGAME
 @app.route("/wordgame", methods=['GET', 'POST'])
@@ -257,13 +265,6 @@ def wordgame():
             # send info to user
             return jsonify(game = out, message = mes, database = data,definition = meaning )
        
-
-@app.route("/news")
-def news():
-    # image_name=generate_cloud()
-    data = get_words()
-    print(data)
-    return render_template("news.html", data=data)
 
 if __name__ == "__main__":
     app.run(debug=False)    
