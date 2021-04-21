@@ -1,4 +1,4 @@
-# YOUR PROJECT TITLE
+# ETproject
 #### Video Demo: https://youtu.be/YR9VjPeo6TE
 #### Description:
 https://etproject.herokuapp.com
@@ -48,13 +48,17 @@ Contains tables for each user to keep score for word game. Example of a table ca
 
 ## utility ##
 
-"Procfile" is something needed to deploy on heroku. "runtime.txt" specifiec a version of Python to deploy on Heroku.
+"Procfile" is something needed to deploy on heroku. 
+"runtime.txt" specifiec a version of Python to deploy on Heroku.
 "requirements.txt" specifiec all of the dependencies for Python to deploy on Heroku.
 
 ## Folders ##
 
 -cs50final - virtual environment folder
+
 -flask_sessions - server utility
+
 -static - css code, wordcloud code and jQuery
+
 -templates - all html pages with some JS code on them for games and wordcloud generation.
 
