@@ -1,15 +1,16 @@
 # ETproject
+Final project for CS50x HarvardX course. As one of the prorposed projects i choose web application based on Flask framework. I though about making online word-based games. I already had actuall games implemented in code as part of MITx course. For this project i designed web sites and build user's web interface on top of engines i already had and joined it all in one monolithic app. Web app is written in Python(Flask), also uses HTML, CSS, jQuery, JS, SQLite3.
 
 #### Description:
 https://etproject.herokuapp.com
 
-A webapp with word games. You can play hangman where you need to guesse a random word one letter at a time.
+A webapp with word-based games. You can play hangman where you need to guesse a random word one letter at a time.
 And you can play word game where you need to create word from given random letters. 
 In word game you can compare yourself with computer or play against it.
 Also you can keep score if you login. Registration is very simple, just enter a name.
 Words will be saved in database and then a wordcloud will be generates if you visit News/Popular words page.
 
-Webapp is written in Python(Flask), also uses HTML, CSS, jQuery, JS, SQLite3.
+
 
 ## app.py ##
 
