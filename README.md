@@ -3,7 +3,7 @@
 #### Description:
 https://etproject.herokuapp.com
 
-I made a website with two hard word games. You can play hangman where you need to guesse a random word one letter at a time.
+A webapp with word games. You can play hangman where you need to guesse a random word one letter at a time.
 And you can play word game where you need to create word from given random letters. 
 In word game you can compare yourself with computer or play against it.
 Also you can keep score if you login. Registration is very simple, just enter a name.
