@@ -1,5 +1,5 @@
 # ETproject
-#### Video Demo: https://youtu.be/YR9VjPeo6TE
+
 #### Description:
 https://etproject.herokuapp.com
 
