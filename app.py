@@ -16,7 +16,7 @@ app = Flask(__name__)
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-app.secret_key="b'\xa5\xa9\x1e\x0e\t3\xa4\x18^\xba\x08\xf7\xb1\xd0\xadG'"
+app.secret_key= os.environ['SECRET'] or "b'\xa5\xa9\x1e\x0e\t3\xa4\x18^\xba\x08\xf7\xb1\xd0\xadG'"
 
 Session(app)
 
